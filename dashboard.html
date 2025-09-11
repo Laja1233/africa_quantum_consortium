@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Africa Quantum Consortium (AQC) Dashboard 2025</title>
+    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Subtle background pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            /* background-image: radial-gradient(circle at 25% 25%, #00cc88 0%, transparent 50%),
+                              radial-gradient(circle at 75% 75%, #f5f5f5 0%, transparent 50%);
+                              */
+            z-index: -1;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #00cc88;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #f5f5f5;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00cc88;
+        }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            background: rgba(245, 245, 245, 0.02);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .breadcrumb-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: #00cc88;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 0.75rem;
+            color: #666;
+        }
+
+        .breadcrumb-current {
+            color: #f5f5f5;
+            font-weight: 500;
+        }
+
+        /* Header */
+        .header {
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+           
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 300;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #f5f5f5 0%, #00cc88 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            color: #bbb;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .header-stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #00cc88;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 0.25rem;
+        }
+
+        /* Main Dashboard Container */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00cc88, #f5f5f5, #00cc88);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 204, 136, 0.1);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #f5f5f5;
+        }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        /* World Quantum Cities Map */
+        .quantum-map-card {
+            min-height: 500px;
+        }
+
+        .map-wrapper {
+            position: relative;
+            height: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        #quantum-world-map {
+            width: 100%;
+            height: 100%;
+            border: none;
+            filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(1.1);
+        }
+
+        /* Quantum Cities Overlay */
+        .cities-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .quantum-city-marker {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #00cc88;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: quantum-pulse 2s infinite;
+            pointer-events: all;
+            cursor: pointer;
+        }
+
+        .quantum-city-marker:hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            z-index: 20;
+        }
+
+        .quantum-city-marker::after {
+            content: attr(data-city);
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #ffffff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .quantum-city-marker:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes quantum-pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(0, 204, 136, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(0, 204, 136, 0);
+            }
+        }
+
+        /* Cities List */
+        .cities-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .city-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.2s ease;
+        }
+
+        .city-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .city-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .city-flag {
+            font-size: 1.2rem;
+        }
+
+        .city-name {
+            color: #f5f5f5;
+            font-weight: 400;
+        }
+
+        .city-status {
+            font-size: 0.8rem;
+            color: #00cc88;
+            background: rgba(0, 204, 136, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Metrics */
+        .metric-card {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #f5f5f5;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 1rem;
+            color: #bbb;
+        }
+
+        .metric-change {
+            font-size: 0.85rem;
+            color: #00cc88;
+            margin-top: 0.25rem;
+        }
+
+        /* Progress Bars */
+        .progress-container {
+            margin: 1rem 0;
+        }
+
+        .progress-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            color: #f5f5f5;
+            flex: 1;
+        }
+
+        .progress-value {
+            font-size: 0.9rem;
+            color: #00cc88;
+            margin-left: 1rem;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00cc88, #f5f5f5);
+            border-radius: 3px;
+            transition: width 2s ease-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-stats {
+                flex-wrap: wrap;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .dashboard-container {
+                padding: 1rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom Scrollbar */
+        .cities-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .cities-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .cities-list::-webkit-scrollbar-thumb {
+            background: rgba(0, 204, 136, 0.5);
+            border-radius: 3px;
+        }
+
+        .cities-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 204, 136, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="logo"><img src="images/logo_copy.png" width="90px" alt=""></div>
+            
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <div class="breadcrumb-container">
+            <a href="/">Home</a>
+            <span class="breadcrumb-separator">›</span>
+            <a href="#">Dashboard</a>
+            <span class="breadcrumb-separator">›</span>
+            <span class="breadcrumb-current">Africa Quantum Consortium (AQC)</span>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>Africa Quantum Technology Dashboard</h1>
+        <p class="header-subtitle">
+            Tracking quantum computing development, investment, and research across African quantum cities in alignment with Agenda 2063 objectives
+        </p>
+        <div class="header-stats">
+            <div class="header-stat">
+                <span class="stat-number">25</span>
+                <span class="stat-label">Quantum Cities</span>
+            </div>
+            <div class="header-stat">
+                <span class="stat-number">16</span>
+                <span class="stat-label">Countries</span>
+            </div>
+            <div class="header-stat">
+                <span class="stat-number">$1.25B</span>
+                <span class="stat-label">Global Investment</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-container">
+        <!-- Primary Grid -->
+        <div class="dashboard-grid">
+            <!-- World Quantum Cities Map -->
+            <div class="card quantum-map-card">
+                <div class="card-header">
+                    <h2 class="card-title">African Quantum Cities Network</h2>
+                </div>
+                <p class="card-subtitle">Interactive map showing quantum research and development hubs across Africa</p>
+                
+                <div class="map-wrapper">
+                    <iframe id="quantum-world-map"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d50803910.91964634!2d-29.17720985!3d-2.0799102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10a06c0a948cf5d5%3A0x108270c99e90f0b3!2sAfrica!5e1!3m2!1sen!2sus!4v1694552000000!5m2!1sen!2sus"
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                    
+                    <div class="cities-overlay">
+                        <!-- Africa Quantum Cities -->
+                        <div class="quantum-city-marker" data-city="Batna, Algeria" style="top: 25%; left: 55%;"></div>
+                        <div class="quantum-city-marker" data-city="Constantine, Algeria" style="top: 26%; left: 56%;"></div>
+                        <div class="quantum-city-marker" data-city="Cuanza Sul, Angola" style="top: 65%; left: 45%;"></div>
+                        <div class="quantum-city-marker" data-city="Luanda, Angola" style="top: 62%; left: 44%;"></div>
+                        <div class="quantum-city-marker" data-city="Lubango, Angola" style="top: 68%; left: 45%;"></div>
+                        <div class="quantum-city-marker" data-city="Praia, Cabo Verde" style="top: 45%; left: 25%;"></div>
+                        <div class="quantum-city-marker" data-city="Limbe, Cameroon" style="top: 52%; left: 50%;"></div>
+                        <div class="quantum-city-marker" data-city="Alexandria, Egypt" style="top: 22%; left: 60%;"></div>
+                        <div class="quantum-city-marker" data-city="New Administrative Capital, Egypt" style="top: 23%; left: 61%;"></div>
+                        <div class="quantum-city-marker" data-city="Accra, Ghana" style="top: 50%; left: 48%;"></div>
+                        <div class="quantum-city-marker" data-city="Bissau, Guinea-Bissau" style="top: 47%; left: 42%;"></div>
+                        <div class="quantum-city-marker" data-city="Buba, Guinea-Bissau" style="top: 48%; left: 42%;"></div>
+                        <div class="quantum-city-marker" data-city="Maseru, Lesotho" style="top: 78%; left: 60%;"></div>
+                        <div class="quantum-city-marker" data-city="Misrata, Libya" style="top: 28%; left: 56%;"></div>
+                        <div class="quantum-city-marker" data-city="Misutata, Libya" style="top: 29%; left: 56%;"></div>
+                        <div class="quantum-city-marker" data-city="Port Louis, Mauritius" style="top: 75%; left: 85%;"></div>
+                        <div class="quantum-city-marker" data-city="Reduit, Mauritius" style="top: 75%; left: 85%;"></div>
+                        <div class="quantum-city-marker" data-city="Kenitra, Morocco" style="top: 28%; left: 45%;"></div>
+                        <div class="quantum-city-marker" data-city="Lichinga, Mozambique" style="top: 70%; left: 65%;"></div>
+                        <div class="quantum-city-marker" data-city="Maputo, Mozambique" style="top: 78%; left: 62%;"></div>
+                        <div class="quantum-city-marker" data-city="São Tomé, São Tomé" style="top: 52%; left: 47%;"></div>
+                        <div class="quantum-city-marker" data-city="Cape Town, South Africa" style="top: 82%; left: 55%;"></div>
+                        <div class="quantum-city-marker" data-city="Durban, South Africa" style="top: 78%; left: 62%;"></div>
+                        <div class="quantum-city-marker" data-city="Gqeberha, South Africa" style="top: 81%; left: 58%;"></div>
+                        <div class="quantum-city-marker" data-city="Johannesburg, South Africa" style="top: 77%; left: 59%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cities List -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Quantum Cities Registry</h2>
+                </div>
+                <p class="card-subtitle">25 cities participating in quantum development across 16 African countries</p>
+                
+                <div class="cities-list">
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇩🇿</span>
+                            <span class="city-name">Batna, Algeria</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇩🇿</span>
+                            <span class="city-name">Constantine, Algeria</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇦🇴</span>
+                            <span class="city-name">Cuanza Sul, Angola</span>
+                        </div>
+                        <span class="city-status">Emerging</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇦🇴</span>
+                            <span class="city-name">Luanda, Angola</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇦🇴</span>
+                            <span class="city-name">Lubango, Angola</span>
+                        </div>
+                        <span class="city-status">Emerging</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇨🇻</span>
+                            <span class="city-name">Praia, Cabo Verde</span>
+                        </div>
+                        <span class="city-status">Planning</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇨🇲</span>
+                            <span class="city-name">Limbe, Cameroon</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇪🇬</span>
+                            <span class="city-name">Alexandria, Egypt</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇪🇬</span>
+                            <span class="city-name">New Administrative Capital</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇬🇭</span>
+                            <span class="city-name">Accra, Ghana</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇬🇼</span>
+                            <span class="city-name">Bissau, Guinea-Bissau</span>
+                        </div>
+                        <span class="city-status">Planning</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇬🇼</span>
+                            <span class="city-name">Buba, Guinea-Bissau</span>
+                        </div>
+                        <span class="city-status">Planning</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇱🇸</span>
+                            <span class="city-name">Maseru, Lesotho</span>
+                        </div>
+                        <span class="city-status">Emerging</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇱🇾</span>
+                            <span class="city-name">Misrata, Libya</span>
+                        </div>
+                        <span class="city-status">Planning</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇱🇾</span>
+                            <span class="city-name">Misutata, Libya</span>
+                        </div>
+                        <span class="city-status">Planning</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇲🇺</span>
+                            <span class="city-name">Port Louis, Mauritius</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇲🇺</span>
+                            <span class="city-name">Reduit, Mauritius</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇲🇦</span>
+                            <span class="city-name">Kenitra, Morocco</span>
+                        </div>
+                        <span class="city-status">Emerging</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇲🇿</span>
+                            <span class="city-name">Lichinga, Mozambique</span>
+                        </div>
+                        <span class="city-status">Planning</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇲🇿</span>
+                            <span class="city-name">Maputo, Mozambique</span>
+                        </div>
+                        <span class="city-status">Emerging</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇸🇹</span>
+                            <span class="city-name">São Tomé, São Tomé</span>
+                        </div>
+                        <span class="city-status">Planning</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇿🇦</span>
+                            <span class="city-name">Cape Town, South Africa</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇿🇦</span>
+                            <span class="city-name">Durban, South Africa</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇿🇦</span>
+                            <span class="city-name">Gqeberha, South Africa</span>
+                        </div>
+                        <span class="city-status">Emerging</span>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-info">
+                            <span class="city-flag">🇿🇦</span>
+                            <span class="city-name">Johannesburg, South Africa</span>
+                        </div>
+                        <span class="city-status">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+            <div class="card metric-card">
+                <div class="card-header">
+                    <h3 class="card-title">Global Quantum Investment</h3>
+                </div>
+                <span class="metric-value">$1.25B</span>
+                <div class="metric-label">Q1 2025 Investment</div>
+                <div class="metric-change">↗ +128% from Q1 2024</div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="card-header">
+                    <h3 class="card-title">VC Funding 2024</h3>
+                </div>
+                <span class="metric-value">$1.9B</span>
+                <div class="metric-label">Total Venture Capital</div>
+                <div class="metric-change">↗ +138% growth</div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="card-header">
+                    <h3 class="card-title">Government Funding</h3>
+                </div>
+                <span class="metric-value">$1.8B</span>
+                <div class="metric-label">Public Investment 2024</div>
+                <div class="metric-change">Stable funding</div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="card-header">
+                    <h3 class="card-title">Quantum Advantage</h3>
+                </div>
+                <span class="metric-value">10²⁵</span>
+                <div class="metric-label">Years (Classical Equivalent)</div>
+                <div class="metric-change">Google Willow Achievement</div>
+            </div>
+        </div>
+
+        <!-- Additional Cards -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Quantum Milestones 2024-2025</h3>
+                </div>
+                <p class="card-subtitle">Major breakthroughs in quantum computing technology</p>
+                
+                <div class="progress-container">
+                    <div class="progress-item">
+                        <div>
+                            <div class="progress-label">Google Willow Chip</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 95%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-value">105 qubits</div>
+                    </div>
+                    
+                    <div class="progress-item">
+                        <div>
+                            <div class="progress-label">IBM Quantum Loon</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-value">Error Correction</div>
+                    </div>
+                    
+                    <div class="progress-item">
+                        <div>
+                            <div class="progress-label">QuEra Systems</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-value">10 Logical Qubits</div>
+                    </div>
+                    
+                    <div class="progress-item">
+                        <div>
+                            <div class="progress-label">Intel Tunnel Falls</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-value">300mm Wafers</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Leading Quantum Companies</h3>
+                </div>
+                <p class="card-subtitle">Global leaders in quantum technology development</p>
+                
+                <div class="progress-container">
+                    <div class="progress-item">
+                        <div>
+                            <div class="progress-label">IBM</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-value">$500M</div>
+                    </div>
+                    
+                    <div class="progress-item">
+                        <div>
+                            <div class="progress-label">Google/Alphabet</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 95%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-value">$350B Revenue</div>
+                    </div>
+                    
+                    <div class="progress-item">
+                        <div>
+                            <div class="progress-label">Quantinuum</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-value">$300M</div>
+                    </div>
+                    
+                    
+                    <div class="progress-item">
+                        <div>
+                            <div class="progress-label">Riverlane</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-value">$75M Series C</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Regional Investment Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Regional Quantum Investment Distribution</h3>
+            </div>
+            <p class="card-subtitle">Global quantum funding by region and market share</p>
+            
+            <div class="progress-container">
+                <div class="progress-item">
+                    <div>
+                        <div class="progress-label">🇺🇸 United States</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 44%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-value">44%</div>
+                </div>
+                
+                <div class="progress-item">
+                    <div>
+                        <div class="progress-label">🇦🇺 Australia</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 25%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-value">$893M</div>
+                </div>
+                
+                <div class="progress-item">
+                    <div>
+                        <div class="progress-label">🇪🇺 European Union</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 20%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-value">20%</div>
+                </div>
+                
+                <div class="progress-item">
+                    <div>
+                        <div class="progress-label">🌍 Africa & Emerging</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 11%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-value">11%</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Data sourced from McKinsey Global Institute, The Quantum Insider, IBM Research, Google Quantum AI, and World Quantum Day initiative</p>
+        <p>Aligned with NEPAD Agenda 2063 Framework • Updated September 2025</p>
+    </footer>
+
+    <script>
+
+
+// Map bounds for Africa (approximate)
+        const MAP_BOUNDS = {
+            north: 37.5,    // Northern Africa (Morocco/Algeria/Tunisia)
+            south: -34.8,   // Southern Africa (South Africa)
+            west: -25.4,    // Western Africa (Cabo Verde)
+            east: 63.5      // Eastern Africa (Mauritius)
+        };
+
+        // Convert latitude/longitude to pixel position on the map
+        function coordsToPixels(lat, lng) {
+            const mapElement = document.querySelector('.map-wrapper');
+            const mapRect = mapElement.getBoundingClientRect();
+            
+            // Normalize coordinates to 0-1 range within Africa bounds
+            const x = (lng - MAP_BOUNDS.west) / (MAP_BOUNDS.east - MAP_BOUNDS.west);
+            const y = (MAP_BOUNDS.north - lat) / (MAP_BOUNDS.north - MAP_BOUNDS.south);
+            
+            // Convert to pixel coordinates
+            const pixelX = (x * mapRect.width) / mapRect.width * 100; // as percentage
+            const pixelY = (y * mapRect.height) / mapRect.height * 100; // as percentage
+            
+            return {
+                left: Math.max(0, Math.min(100, pixelX)) + '%',
+                top: Math.max(0, Math.min(100, pixelY)) + '%'
+            };
+        }
+
+        // Position city markers based on coordinates
+        function positionCityMarkers() {
+            const markers = document.querySelectorAll('.quantum-city-marker');
+            
+            markers.forEach(marker => {
+                const lat = parseFloat(marker.getAttribute('data-lat'));
+                const lng = parseFloat(marker.getAttribute('data-lng'));
+                
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    const position = coordsToPixels(lat, lng);
+                    marker.style.position = 'absolute';
+                    marker.style.left = position.left;
+                    marker.style.top = position.top;
+                }
+            });
+        }
+
+        // Initialize dashboard animations and positioning
+        document.addEventListener('DOMContentLoaded', function() {
+            // Position city markers when page loads
+            setTimeout(positionCityMarkers, 100);
+            
+            // Reposition markers when window resizes
+            window.addEventListener('resize', positionCityMarkers);
+            
+            // Animate progress bars
+            setTimeout(() => {
+                const progressBars = document.querySelectorAll('.progress-fill');
+                progressBars.forEach((bar, index) => {
+                    setTimeout(() => {
+                        bar.style.opacity = '0';
+                        bar.style.width = '0%';
+                        bar.style.transition = 'all 1.5s ease-out';
+                        
+                        setTimeout(() => {
+                            bar.style.opacity = '1';
+                            bar.style.width = bar.style.width; // Restore original width
+                        }, 100);
+                    }, index * 150);
+                });
+            }, 500);
+
+            // Animate metric values
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach((metric, index) => {
+                setTimeout(() => {
+                    metric.style.transform = 'translateY(20px)';
+                    metric.style.opacity = '0';
+                    metric.style.transition = 'all 0.8s ease-out';
+                    
+                    setTimeout(() => {
+                        metric.style.transform = 'translateY(0)';
+                        metric.style.opacity = '1';
+                    }, 100);
+                }, index * 200);
+            });
+        });
+
+
+
+        // Initialize dashboard animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars
+            setTimeout(() => {
+                const progressBars = document.querySelectorAll('.progress-fill');
+                progressBars.forEach((bar, index) => {
+                    setTimeout(() => {
+                        bar.style.opacity = '0';
+                        bar.style.width = '0%';
+                        bar.style.transition = 'all 1.5s ease-out';
+                        
+                        setTimeout(() => {
+                            bar.style.opacity = '1';
+                            bar.style.width = bar.style.width; // Restore original width
+                        }, 100);
+                    }, index * 150);
+                });
+            }, 500);
+
+            // Animate metric values
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach((metric, index) => {
+                setTimeout(() => {
+                    metric.style.transform = 'translateY(20px)';
+                    metric.style.opacity = '0';
+                    metric.style.transition = 'all 0.8s ease-out';
+                    
+                    setTimeout(() => {
+                        metric.style.transform = 'translateY(0)';
+                        metric.style.opacity = '1';
+                    }, 100);
+                }, index * 200);
+            });
+        });
+
+        // Interactive city markers
+        document.querySelectorAll('.quantum-city-marker').forEach(marker => {
+            marker.addEventListener('click', function() {
+                const cityName = this.getAttribute('data-city');
+                
+                // Find corresponding city in the list and highlight it
+                const cityItems = document.querySelectorAll('.city-item');
+                cityItems.forEach(item => {
+                    item.style.background = 'rgba(255, 255, 255, 0.05)';
+                });
+                
+                const matchingCity = Array.from(cityItems).find(item => 
+                    item.querySelector('.city-name').textContent === cityName
+                );
+                
+                if (matchingCity) {
+                    matchingCity.style.background = 'rgba(0, 204, 136, 0.2)';
+                    matchingCity.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    setTimeout(() => {
+                        matchingCity.style.background = 'rgba(255, 255, 255, 0.05)';
+                    }, 3000);
+                }
+            });
+        });
+
+        // Real-time data updates simulation
+        setInterval(() => {
+            const changes = document.querySelectorAll('.metric-change');
+            changes.forEach(change => {
+                if (Math.random() > 0.8) {
+                    change.style.color = '#f5f5f5';
+                    setTimeout(() => {
+                        change.style.color = '#00cc88';
+                    }, 1500);
+                }
+            });
+        }, 10000);
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
