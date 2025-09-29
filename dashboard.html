@@ -3,1157 +3,1344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Africa Quantum Consortium (AQC) Dashboard 2025</title>
+    <title>AQC Dashboard</title>
     <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #000000;
-            color: #ffffff;
+        
+        html, body {
             overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        /* Subtle background pattern */
-        .bg-pattern {
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            opacity: 0.05;
-            /* background-image: radial-gradient(circle at 25% 25%, #00cc88 0%, transparent 50%),
-                              radial-gradient(circle at 75% 75%, #f5f5f5 0%, transparent 50%);
-                              */
-            z-index: -1;
         }
-
-        /* Top Navigation Bar */
-        .top-nav {
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0.75rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: white;
+            min-height: 100vh;
+            line-height: 1.4;
         }
-
-        .nav-container {
-            max-width: 1400px;
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .logo {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #00cc88;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: #f5f5f5;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: #00cc88;
+            padding: 10px;
+            overflow-x: hidden;
         }
 
         /* Breadcrumb Navigation */
         .breadcrumb {
-            background: rgba(245, 245, 245, 0.02);
-            padding: 1rem 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .breadcrumb-container {
-            max-width: 1400px;
-            margin: 0 auto;
+            background: #111111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            font-size: 0.9rem;
+            gap: 8px;
+            font-size: clamp(14px, 2vw, 16px);
+            overflow-x: auto;
+            white-space: nowrap;
         }
 
         .breadcrumb a {
-            color: #ccc;
+            color: #22c55e;
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
         }
 
         .breadcrumb a:hover {
-            color: #00cc88;
+            opacity: 0.8;
         }
 
-        .breadcrumb-separator {
-            margin: 0 0.75rem;
-            color: #666;
+        .breadcrumb .separator {
+            color: rgba(255, 255, 255, 0.5);
+            flex-shrink: 0;
         }
 
-        .breadcrumb-current {
-            color: #f5f5f5;
-            font-weight: 500;
+        .breadcrumb .current {
+            color: white;
+            flex-shrink: 0;
         }
-
-        /* Header */
+        
         .header {
-            padding: 3rem 2rem 2rem;
-            text-align: center;
-            position: relative;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 2px;
-           
-        }
-
-        .header h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 300;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #f5f5f5 0%, #00cc88 50%, #ffffff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header-subtitle {
-            font-size: 1.2rem;
-            color: #bbb;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-        }
-
-        .header-stats {
             display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin-top: 2rem;
-        }
-
-        .header-stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 300;
-            color: #00cc88;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #888;
-            margin-top: 0.25rem;
-        }
-
-        /* Main Dashboard Container */
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        /* Grid Layout */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Cards */
-        .card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #111111;
             border-radius: 12px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            border: 1px solid #333;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #00cc88, #f5f5f5, #00cc88);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 204, 136, 0.1);
-        }
-
-        .card:hover::before {
-            opacity: 1;
-        }
-
-        .card-header {
+        .header-content {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            gap: 20px;
+            flex: 1;
+            min-width: 200px;
         }
 
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 500;
-            color: #f5f5f5;
+        .logo-container {
+            flex-shrink: 0;
         }
 
-        .card-subtitle {
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 1rem;
-        }
-
-        /* World Quantum Cities Map */
-        .quantum-map-card {
-            min-height: 500px;
-        }
-
-        .map-wrapper {
-            position: relative;
-            height: 400px;
+        .logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
             border-radius: 8px;
-            overflow: hidden;
-            margin: 1rem 0;
         }
-
-        #quantum-world-map {
-            width: 100%;
-            height: 100%;
-            border: none;
-            filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(1.1);
+        
+        .welcome {
+            flex: 1;
+            min-width: 200px;
         }
-
-        /* Quantum Cities Overlay */
-        .cities-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .quantum-city-marker {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #00cc88;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: quantum-pulse 2s infinite;
-            pointer-events: all;
-            cursor: pointer;
-        }
-
-        .quantum-city-marker:hover {
-            transform: translate(-50%, -50%) scale(1.5);
-            z-index: 20;
-        }
-
-        .quantum-city-marker::after {
-            content: attr(data-city);
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
+        
+        .welcome h1 {
+            font-size: clamp(20px, 4vw, 32px);
+            margin-bottom: 6px;
             color: #ffffff;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+        
+        .welcome p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: clamp(14px, 2.5vw, 16px);
+            word-break: break-word;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: clamp(13px, 2vw, 15px);
+            display: flex;
+            align-items: center;
+            gap: 5px;
             white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            min-width: 60px;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: #22c55e;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #1a1a1a;
+            color: white;
+            border: 1px solid #333;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .stat-card {
+            background: #111111;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 16px;
+            transition: all 0.2s ease;
+            min-width: 0;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-1px);
+            border-color: #22c55e;
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 5px;
+        }
+        
+        .stat-title {
+            font-size: clamp(12px, 2vw, 15px);
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .stat-icon {
+            font-size: clamp(16px, 3vw, 22px);
+            color: #22c55e;
+            flex-shrink: 0;
+        }
+        
+        .stat-value {
+            font-size: clamp(22px, 5vw, 32px);
+            font-weight: bold;
+            color: #22c55e;
+            word-break: break-all;
+        }
+        
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            width: 100%;
+        }
+        
+        .chart-card {
+            background: #111111;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 16px;
+            transition: all 0.2s ease;
+            min-width: 0;
+            overflow: hidden;
+        }
+        
+        .chart-card:hover {
+            border-color: #22c55e;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .chart-title {
+            font-size: clamp(14px, 2.5vw, 18px);
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .date-filter {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 6px 10px;
+            color: white;
+            font-size: clamp(12px, 1.8vw, 14px);
+            flex-shrink: 0;
+            min-width: 80px;
+        }
+
+        .chart-container {
+            height: 280px;
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .donut-container {
+            position: relative;
+            height: 280px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
             pointer-events: none;
         }
-
-        .quantum-city-marker:hover::after {
-            opacity: 1;
+        
+        .donut-percentage {
+            font-size: clamp(18px, 4vw, 28px);
+            font-weight: bold;
+            color: #22c55e;
         }
-
-        @keyframes quantum-pulse {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(0, 204, 136, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 0 8px rgba(0, 204, 136, 0);
-            }
+        
+        .donut-label {
+            font-size: clamp(12px, 2vw, 14px);
+            color: rgba(255, 255, 255, 0.7);
         }
-
-        /* Cities List */
-        .cities-list {
-            max-height: 300px;
+        
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            width: 100%;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            width: 100%;
+        }
+        
+        .table-card {
+            background: #111111;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 16px;
+            transition: all 0.2s ease;
+            max-height: 400px;
             overflow-y: auto;
-            margin-top: 1rem;
+            overflow-x: hidden;
+            min-width: 0;
         }
-
-        .city-item {
+        
+        .table-card:hover {
+            border-color: #22c55e;
+        }
+        
+        .section-title {
+            font-size: clamp(15px, 3vw, 20px);
+            font-weight: 600;
+            color: #22c55e;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: background 0.2s ease;
+            gap: 8px;
         }
-
-        .city-item:hover {
-            background: rgba(255, 255, 255, 0.05);
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            table-layout: fixed;
         }
-
-        .city-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        
+        .table th {
+            text-align: left;
+            padding: 10px 8px;
+            border-bottom: 1px solid #333;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: clamp(12px, 2vw, 14px);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
-        .city-flag {
-            font-size: 1.2rem;
+        
+        .table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #1a1a1a;
+            font-size: clamp(12px, 2vw, 14px);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
-        .city-name {
-            color: #f5f5f5;
-            font-weight: 400;
+        
+        .table th:first-child,
+        .table td:first-child {
+            width: 50%;
         }
-
-        .city-status {
-            font-size: 0.8rem;
-            color: #00cc88;
-            background: rgba(0, 204, 136, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        /* Metrics */
-        .metric-card {
+        
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            width: 25%;
             text-align: center;
         }
-
-        .metric-value {
-            font-size: 2.5rem;
-            font-weight: 300;
-            color: #f5f5f5;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .metric-label {
-            font-size: 1rem;
-            color: #bbb;
-        }
-
-        .metric-change {
-            font-size: 0.85rem;
-            color: #00cc88;
-            margin-top: 0.25rem;
-        }
-
-        /* Progress Bars */
-        .progress-container {
-            margin: 1rem 0;
-        }
-
-        .progress-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .progress-label {
-            font-size: 0.9rem;
-            color: #f5f5f5;
-            flex: 1;
-        }
-
-        .progress-value {
-            font-size: 0.9rem;
-            color: #00cc88;
-            margin-left: 1rem;
-            min-width: 50px;
+        
+        .table th:nth-child(3),
+        .table td:nth-child(3) {
+            width: 25%;
             text-align: right;
         }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+        
+        .industry-tag,
+        .country-tag {
+            background: #22c55e;
+            color: #000000;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: clamp(10px, 1.5vw, 12px);
+            font-weight: 500;
+            display: inline-block;
+            max-width: 100%;
             overflow: hidden;
-            margin-top: 0.5rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .theme-item,
+        .needs-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #1a1a1a;
+            gap: 10px;
+        }
+        
+        .theme-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .theme-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #ffffff;
+            font-size: clamp(13px, 2.2vw, 15px);
+            word-break: break-word;
+        }
+        
+        .theme-stats {
+            font-size: clamp(11px, 1.8vw, 13px);
+            color: rgba(255, 255, 255, 0.5);
+            word-break: break-word;
+        }
+        
+        .theme-badge {
+            background: #22c55e;
+            color: #000000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: clamp(9px, 1.2vw, 11px);
+            font-weight: 500;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        
+        .more-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 6px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        
+        .more-btn:hover {
+            color: #22c55e;
+            background: #1a1a1a;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00cc88, #f5f5f5);
-            border-radius: 3px;
-            transition: width 2s ease-out;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
+        @media (min-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 2fr 1fr;
             }
             
-            .header-stats {
-                flex-wrap: wrap;
-                gap: 2rem;
+            .content-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
 
-        @media (max-width: 768px) {
-            .nav-container {
-                padding: 0 1rem;
+        @media (max-width: 767px) {
+            .container {
+                padding: 8px;
+            }
+
+            .breadcrumb {
+                padding: 10px 15px;
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+            
+            .header {
                 flex-direction: column;
-                gap: 1rem;
+                align-items: stretch;
+                gap: 12px;
+                padding: 15px;
+                text-align: center;
             }
-            
-            .nav-links {
-                gap: 1rem;
-            }
-            
-            .dashboard-container {
-                padding: 1rem;
-            }
-            
-            .metrics-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header-stats {
+
+            .header-content {
                 flex-direction: column;
-                gap: 1.5rem;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .logo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .header-actions {
+                justify-content: center;
+                width: 100%;
+                flex-wrap: nowrap;
+            }
+            
+            .btn {
+                flex: 1;
+                max-width: 120px;
+                justify-content: center;
+                padding: 12px 10px;
+                font-size: 14px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 14px;
+            }
+
+            .chart-container,
+            .donut-container {
+                height: 240px;
+            }
+            
+            .chart-card,
+            .table-card {
+                padding: 14px;
+            }
+
+            .table-card {
+                max-height: 320px;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .chart-title {
+                justify-content: center;
+                min-width: auto;
+                font-size: 16px;
+            }
+            
+            .date-filter {
+                width: 100%;
+                text-align: center;
+                min-width: auto;
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+            
+            .theme-item,
+            .needs-item {
+                padding: 10px 0;
+                gap: 8px;
+            }
+            
+            .table th,
+            .table td {
+                padding: 8px 6px;
+                font-size: 13px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 8px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+
+            .logo {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .welcome h1 {
+                font-size: 22px;
+            }
+            
+            .welcome p {
+                font-size: 15px;
+            }
+            
+            .stats-grid {
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 12px;
+            }
+            
+            .btn {
+                font-size: 13px;
+                padding: 10px 8px;
+                gap: 4px;
+                max-width: 110px;
+            }
+
+            .chart-container,
+            .donut-container {
+                height: 220px;
+            }
+            
+            .chart-card,
+            .table-card {
+                padding: 12px;
+            }
+
+            .table-card {
+                max-height: 300px;
+            }
+            
+            .table th,
+            .table td {
+                padding: 8px 4px;
+                font-size: 12px;
+            }
+            
+            .theme-item,
+            .needs-item {
+                padding: 8px 0;
+                gap: 6px;
+            }
+            
+            .industry-tag,
+            .country-tag {
+                padding: 2px 6px;
+                font-size: 11px;
+            }
+            
+            .chart-title {
+                font-size: 15px;
+            }
+            
+            .date-filter {
+                font-size: 12px;
             }
         }
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 3rem 2rem;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        .charts-section,
+        .bottom-section,
+        .content-grid,
+        .stats-grid {
+            overflow-x: hidden;
         }
 
-        /* Custom Scrollbar */
-        .cities-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .cities-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-        }
-
-        .cities-list::-webkit-scrollbar-thumb {
-            background: rgba(0, 204, 136, 0.5);
-            border-radius: 3px;
-        }
-
-        .cities-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 204, 136, 0.7);
+        h1, h2, h3, h4, h5, h6, p, span, div {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
     </style>
 </head>
 <body>
-    <div class="bg-pattern"></div>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="index.html">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <span class="separator">/</span>
+            <span class="current">Analytics</span>
+        </nav>
 
-    <!-- Top Navigation -->
-    <nav class="top-nav">
-        <div class="nav-container">
-            <div class="logo"><img src="images/logo_copy.png" width="90px" alt=""></div>
-            
-        </div>
-    </nav>
-
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-        <div class="breadcrumb-container">
-            <a href="/">Home</a>
-            <span class="breadcrumb-separator">›</span>
-            <a href="#">Dashboard</a>
-            <span class="breadcrumb-separator">›</span>
-            <span class="breadcrumb-current">Africa Quantum Consortium (AQC)</span>
-        </div>
-    </nav>
-
-    <!-- Header -->
-    <header class="header">
-        <h1>Africa Quantum Technology Dashboard</h1>
-        <p class="header-subtitle">
-            Tracking quantum computing development, investment, and research across African quantum cities in alignment with Agenda 2063 objectives
-        </p>
-        <div class="header-stats">
-            <div class="header-stat">
-                <span class="stat-number">25</span>
-                <span class="stat-label">Quantum Cities</span>
-            </div>
-            <div class="header-stat">
-                <span class="stat-number">16</span>
-                <span class="stat-label">Countries</span>
-            </div>
-            <div class="header-stat">
-                <span class="stat-number">$1.25B</span>
-                <span class="stat-label">Global Investment</span>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Dashboard -->
-    <main class="dashboard-container">
-        <!-- Primary Grid -->
-        <div class="dashboard-grid">
-            <!-- World Quantum Cities Map -->
-            <div class="card quantum-map-card">
-                <div class="card-header">
-                    <h2 class="card-title">African Quantum Cities Network</h2>
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="logo.png" alt="African Quantum Community Logo" class="logo" id="logoImage">
                 </div>
-                <p class="card-subtitle">Interactive map showing quantum research and development hubs across Africa</p>
-                
-                <div class="map-wrapper">
-                    <iframe id="quantum-world-map"
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d50803910.91964634!2d-29.17720985!3d-2.0799102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10a06c0a948cf5d5%3A0x108270c99e90f0b3!2sAfrica!5e1!3m2!1sen!2sus!4v1694552000000!5m2!1sen!2sus"
-                            loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                    
-                    <div class="cities-overlay">
-                        <!-- Africa Quantum Cities -->
-                        <div class="quantum-city-marker" data-city="Batna, Algeria" style="top: 25%; left: 55%;"></div>
-                        <div class="quantum-city-marker" data-city="Constantine, Algeria" style="top: 26%; left: 56%;"></div>
-                        <div class="quantum-city-marker" data-city="Cuanza Sul, Angola" style="top: 65%; left: 45%;"></div>
-                        <div class="quantum-city-marker" data-city="Luanda, Angola" style="top: 62%; left: 44%;"></div>
-                        <div class="quantum-city-marker" data-city="Lubango, Angola" style="top: 68%; left: 45%;"></div>
-                        <div class="quantum-city-marker" data-city="Praia, Cabo Verde" style="top: 45%; left: 25%;"></div>
-                        <div class="quantum-city-marker" data-city="Limbe, Cameroon" style="top: 52%; left: 50%;"></div>
-                        <div class="quantum-city-marker" data-city="Alexandria, Egypt" style="top: 22%; left: 60%;"></div>
-                        <div class="quantum-city-marker" data-city="New Administrative Capital, Egypt" style="top: 23%; left: 61%;"></div>
-                        <div class="quantum-city-marker" data-city="Accra, Ghana" style="top: 50%; left: 48%;"></div>
-                        <div class="quantum-city-marker" data-city="Bissau, Guinea-Bissau" style="top: 47%; left: 42%;"></div>
-                        <div class="quantum-city-marker" data-city="Buba, Guinea-Bissau" style="top: 48%; left: 42%;"></div>
-                        <div class="quantum-city-marker" data-city="Maseru, Lesotho" style="top: 78%; left: 60%;"></div>
-                        <div class="quantum-city-marker" data-city="Misrata, Libya" style="top: 28%; left: 56%;"></div>
-                        <div class="quantum-city-marker" data-city="Misutata, Libya" style="top: 29%; left: 56%;"></div>
-                        <div class="quantum-city-marker" data-city="Port Louis, Mauritius" style="top: 75%; left: 85%;"></div>
-                        <div class="quantum-city-marker" data-city="Reduit, Mauritius" style="top: 75%; left: 85%;"></div>
-                        <div class="quantum-city-marker" data-city="Kenitra, Morocco" style="top: 28%; left: 45%;"></div>
-                        <div class="quantum-city-marker" data-city="Lichinga, Mozambique" style="top: 70%; left: 65%;"></div>
-                        <div class="quantum-city-marker" data-city="Maputo, Mozambique" style="top: 78%; left: 62%;"></div>
-                        <div class="quantum-city-marker" data-city="São Tomé, São Tomé" style="top: 52%; left: 47%;"></div>
-                        <div class="quantum-city-marker" data-city="Cape Town, South Africa" style="top: 82%; left: 55%;"></div>
-                        <div class="quantum-city-marker" data-city="Durban, South Africa" style="top: 78%; left: 62%;"></div>
-                        <div class="quantum-city-marker" data-city="Gqeberha, South Africa" style="top: 81%; left: 58%;"></div>
-                        <div class="quantum-city-marker" data-city="Johannesburg, South Africa" style="top: 77%; left: 59%;"></div>
-                    </div>
+                <div class="welcome">
+                    <h1>African Quantum Community Dashboard</h1>
+                    <p>Analytics of our quantum ecosystem across 50 countries with 288 members</p>
                 </div>
             </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="downloadBtn">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>PDF</span>
+                </button>
+            </div>
+        </div>
 
-            <!-- Cities List -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Quantum Cities Registry</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Members</span>
+                    <i class="fas fa-users stat-icon"></i>
                 </div>
-                <p class="card-subtitle">25 cities participating in quantum development across 16 African countries</p>
-                
-                <div class="cities-list">
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇩🇿</span>
-                            <span class="city-name">Batna, Algeria</span>
-                        </div>
-                        <span class="city-status">Active</span>
+                <div class="stat-value">288</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Organizations</span>
+                    <i class="fas fa-building stat-icon"></i>
+                </div>
+                <div class="stat-value">105</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Countries</span>
+                    <i class="fas fa-globe-africa stat-icon"></i>
+                </div>
+                <div class="stat-value">50</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Research Themes</span>
+                    <i class="fas fa-lightbulb stat-icon"></i>
+                </div>
+                <div class="stat-value">7</div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <span class="chart-title">
+                            <i class="fas fa-chart-bar" style="color: #22c55e;"></i>
+                            Top Countries by Membership
+                        </span>
                     </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇩🇿</span>
-                            <span class="city-name">Constantine, Algeria</span>
-                        </div>
-                        <span class="city-status">Active</span>
+                    <div class="chart-container">
+                        <canvas id="countriesChart"></canvas>
                     </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇦🇴</span>
-                            <span class="city-name">Cuanza Sul, Angola</span>
-                        </div>
-                        <span class="city-status">Emerging</span>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <span class="chart-title">
+                            <i class="fas fa-chart-pie" style="color: #22c55e;"></i>
+                            Member Status
+                        </span>
                     </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇦🇴</span>
-                            <span class="city-name">Luanda, Angola</span>
+                    <div class="donut-container">
+                        <canvas id="distributionChart"></canvas>
+                        <div class="donut-center">
+                            <div class="donut-percentage">92%</div>
+                            <div class="donut-label">Active</div>
                         </div>
-                        <span class="city-status">Active</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇦🇴</span>
-                            <span class="city-name">Lubango, Angola</span>
-                        </div>
-                        <span class="city-status">Emerging</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇨🇻</span>
-                            <span class="city-name">Praia, Cabo Verde</span>
-                        </div>
-                        <span class="city-status">Planning</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇨🇲</span>
-                            <span class="city-name">Limbe, Cameroon</span>
-                        </div>
-                        <span class="city-status">Active</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇪🇬</span>
-                            <span class="city-name">Alexandria, Egypt</span>
-                        </div>
-                        <span class="city-status">Active</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇪🇬</span>
-                            <span class="city-name">New Administrative Capital</span>
-                        </div>
-                        <span class="city-status">Active</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇬🇭</span>
-                            <span class="city-name">Accra, Ghana</span>
-                        </div>
-                        <span class="city-status">Active</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇬🇼</span>
-                            <span class="city-name">Bissau, Guinea-Bissau</span>
-                        </div>
-                        <span class="city-status">Planning</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇬🇼</span>
-                            <span class="city-name">Buba, Guinea-Bissau</span>
-                        </div>
-                        <span class="city-status">Planning</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇱🇸</span>
-                            <span class="city-name">Maseru, Lesotho</span>
-                        </div>
-                        <span class="city-status">Emerging</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇱🇾</span>
-                            <span class="city-name">Misrata, Libya</span>
-                        </div>
-                        <span class="city-status">Planning</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇱🇾</span>
-                            <span class="city-name">Misutata, Libya</span>
-                        </div>
-                        <span class="city-status">Planning</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇲🇺</span>
-                            <span class="city-name">Port Louis, Mauritius</span>
-                        </div>
-                        <span class="city-status">Active</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇲🇺</span>
-                            <span class="city-name">Reduit, Mauritius</span>
-                        </div>
-                        <span class="city-status">Active</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇲🇦</span>
-                            <span class="city-name">Kenitra, Morocco</span>
-                        </div>
-                        <span class="city-status">Emerging</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇲🇿</span>
-                            <span class="city-name">Lichinga, Mozambique</span>
-                        </div>
-                        <span class="city-status">Planning</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇲🇿</span>
-                            <span class="city-name">Maputo, Mozambique</span>
-                        </div>
-                        <span class="city-status">Emerging</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇸🇹</span>
-                            <span class="city-name">São Tomé, São Tomé</span>
-                        </div>
-                        <span class="city-status">Planning</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇿🇦</span>
-                            <span class="city-name">Cape Town, South Africa</span>
-                        </div>
-                        <span class="city-status">Active</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇿🇦</span>
-                            <span class="city-name">Durban, South Africa</span>
-                        </div>
-                        <span class="city-status">Active</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇿🇦</span>
-                            <span class="city-name">Gqeberha, South Africa</span>
-                        </div>
-                        <span class="city-status">Emerging</span>
-                    </div>
-                    <div class="city-item">
-                        <div class="city-info">
-                            <span class="city-flag">🇿🇦</span>
-                            <span class="city-name">Johannesburg, South Africa</span>
-                        </div>
-                        <span class="city-status">Active</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Metrics Grid -->
-        <div class="metrics-grid">
-            <div class="card metric-card">
-                <div class="card-header">
-                    <h3 class="card-title">Global Quantum Investment</h3>
+        <div class="bottom-section">
+            <div class="content-grid">
+                <div class="table-card">
+                    <div class="chart-header">
+                        <span class="chart-title">
+                            <i class="fas fa-industry" style="color: #22c55e;"></i>
+                            Top Industries
+                        </span>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Industry</th>
+                                <th>Count</th>
+                                <th>%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="industry-tag">Education</span></td>
+                                <td>13</td>
+                                <td>4.5%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="industry-tag">IT</span></td>
+                                <td>6</td>
+                                <td>2.1%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="industry-tag">Academia</span></td>
+                                <td>4</td>
+                                <td>1.4%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="industry-tag">Research</span></td>
+                                <td>3</td>
+                                <td>1.0%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="industry-tag">Consulting</span></td>
+                                <td>3</td>
+                                <td>1.0%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="industry-tag">Quantum</span></td>
+                                <td>3</td>
+                                <td>1.0%</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <span class="metric-value">$1.25B</span>
-                <div class="metric-label">Q1 2025 Investment</div>
-                <div class="metric-change">↗ +128% from Q1 2024</div>
+
+                <div class="table-card">
+                    <div class="chart-header">
+                        <span class="chart-title">
+                            <i class="fas fa-flag" style="color: #22c55e;"></i>
+                            Geographic Distribution
+                        </span>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Country</th>
+                                <th>Members</th>
+                                <th>%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="country-tag">USA</span></td>
+                                <td>53</td>
+                                <td>18.4%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="country-tag">Nigeria</span></td>
+                                <td>27</td>
+                                <td>9.4%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="country-tag">Egypt</span></td>
+                                <td>20</td>
+                                <td>6.9%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="country-tag">Ghana</span></td>
+                                <td>13</td>
+                                <td>4.5%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="country-tag">Kenya</span></td>
+                                <td>13</td>
+                                <td>4.5%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="country-tag">Algeria</span></td>
+                                <td>11</td>
+                                <td>3.8%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <div class="card metric-card">
-                <div class="card-header">
-                    <h3 class="card-title">VC Funding 2024</h3>
-                </div>
-                <span class="metric-value">$1.9B</span>
-                <div class="metric-label">Total Venture Capital</div>
-                <div class="metric-change">↗ +138% growth</div>
-            </div>
-
-            <div class="card metric-card">
-                <div class="card-header">
-                    <h3 class="card-title">Government Funding</h3>
-                </div>
-                <span class="metric-value">$1.8B</span>
-                <div class="metric-label">Public Investment 2024</div>
-                <div class="metric-change">Stable funding</div>
-            </div>
-
-            <div class="card metric-card">
-                <div class="card-header">
-                    <h3 class="card-title">Quantum Advantage</h3>
-                </div>
-                <span class="metric-value">10²⁵</span>
-                <div class="metric-label">Years (Classical Equivalent)</div>
-                <div class="metric-change">Google Willow Achievement</div>
-            </div>
-        </div>
-
-        <!-- Additional Cards -->
-        <div class="dashboard-grid">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Quantum Milestones 2024-2025</h3>
-                </div>
-                <p class="card-subtitle">Major breakthroughs in quantum computing technology</p>
-                
-                <div class="progress-container">
-                    <div class="progress-item">
-                        <div>
-                            <div class="progress-label">Google Willow Chip</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 95%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-value">105 qubits</div>
+            <div class="content-grid">
+                <div class="table-card">
+                    <div class="chart-header">
+                        <span class="chart-title">
+                            <i class="fas fa-lightbulb" style="color: #22c55e;"></i>
+                            Research Themes
+                        </span>
                     </div>
-                    
-                    <div class="progress-item">
-                        <div>
-                            <div class="progress-label">IBM Quantum Loon</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 85%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-value">Error Correction</div>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <div>
-                            <div class="progress-label">QuEra Systems</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 75%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-value">10 Logical Qubits</div>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <div>
-                            <div class="progress-label">Intel Tunnel Falls</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 70%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-value">300mm Wafers</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Leading Quantum Companies</h3>
-                </div>
-                <p class="card-subtitle">Global leaders in quantum technology development</p>
-                
-                <div class="progress-container">
-                    <div class="progress-item">
-                        <div>
-                            <div class="progress-label">IBM</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 90%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-value">$500M</div>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <div>
-                            <div class="progress-label">Google/Alphabet</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 95%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-value">$350B Revenue</div>
-                    </div>
-                    
-                    <div class="progress-item">
-                        <div>
-                            <div class="progress-label">Quantinuum</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 75%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-value">$300M</div>
-                    </div>
-                    
-                    
-                    <div class="progress-item">
-                        <div>
-                            <div class="progress-label">Riverlane</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 60%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-value">$75M Series C</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Regional Investment Card -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Regional Quantum Investment Distribution</h3>
-            </div>
-            <p class="card-subtitle">Global quantum funding by region and market share</p>
-            
-            <div class="progress-container">
-                <div class="progress-item">
                     <div>
-                        <div class="progress-label">🇺🇸 United States</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 44%;"></div>
+                        <div class="theme-item">
+                            <div class="theme-content">
+                                <div class="theme-title">Youth Research & Collaboration</div>
+                                <div class="theme-stats">29 mentions • 27 contributors</div>
+                            </div>
+                            <div class="theme-badge">TOP</div>
+                        </div>
+                        <div class="theme-item">
+                            <div class="theme-content">
+                                <div class="theme-title">Industry Applications</div>
+                                <div class="theme-stats">19 mentions • 17 contributors</div>
+                            </div>
+                            <div class="theme-badge">HOT</div>
+                        </div>
+                        <div class="theme-item">
+                            <div class="theme-content">
+                                <div class="theme-title">Education & Training</div>
+                                <div class="theme-stats">15 mentions • 11 contributors</div>
+                            </div>
+                            <div class="theme-badge">ACTIVE</div>
+                        </div>
+                        <div class="theme-item">
+                            <div class="theme-content">
+                                <div class="theme-title">Community Outreach</div>
+                                <div class="theme-stats">10 mentions • 7 contributors</div>
+                            </div>
+                            <div class="theme-badge">GROW</div>
+                        </div>
+                        <div class="theme-item">
+                            <div class="theme-content">
+                                <div class="theme-title">Funding Support</div>
+                                <div class="theme-stats">7 mentions • 7 contributors</div>
+                            </div>
+                            <div class="theme-badge">NEW</div>
                         </div>
                     </div>
-                    <div class="progress-value">44%</div>
                 </div>
-                
-                <div class="progress-item">
+
+                <div class="table-card">
+                    <div class="chart-header">
+                        <span class="chart-title">
+                            <i class="fas fa-users-cog" style="color: #22c55e;"></i>
+                            Member Needs & Contributions
+                        </span>
+                    </div>
                     <div>
-                        <div class="progress-label">🇦🇺 Australia</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 25%;"></div>
+                        <div class="needs-item">
+                            <div class="theme-content">
+                                <div class="theme-title">Lead Working Groups</div>
+                                <div class="theme-stats">Contribution Interest</div>
+                            </div>
+                            <div class="theme-badge">4</div>
+                        </div>
+                        <div class="needs-item">
+                            <div class="theme-content">
+                                <div class="theme-title">Mentorship/Guidance</div>
+                                <div class="theme-stats">Top Need</div>
+                            </div>
+                            <div class="theme-badge">3</div>
+                        </div>
+                        <div class="needs-item">
+                            <div class="theme-content">
+                                <div class="theme-title">Host Meetups</div>
+                                <div class="theme-stats">Community Building</div>
+                            </div>
+                            <div class="theme-badge">3</div>
+                        </div>
+                        <div class="needs-item">
+                            <div class="theme-content">
+                                <div class="theme-title">Industry Partnerships</div>
+                                <div class="theme-stats">Collaboration Need</div>
+                            </div>
+                            <div class="theme-badge">2</div>
+                        </div>
+                        <div class="needs-item">
+                            <div class="theme-content">
+                                <div class="theme-title">Speak at Events</div>
+                                <div class="theme-stats">Knowledge Sharing</div>
+                            </div>
+                            <div class="theme-badge">2</div>
                         </div>
                     </div>
-                    <div class="progress-value">$893M</div>
-                </div>
-                
-                <div class="progress-item">
-                    <div>
-                        <div class="progress-label">🇪🇺 European Union</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 20%;"></div>
-                        </div>
-                    </div>
-                    <div class="progress-value">20%</div>
-                </div>
-                
-                <div class="progress-item">
-                    <div>
-                        <div class="progress-label">🌍 Africa & Emerging</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 11%;"></div>
-                        </div>
-                    </div>
-                    <div class="progress-value">11%</div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>Data sourced from McKinsey Global Institute, The Quantum Insider, IBM Research, Google Quantum AI, and World Quantum Day initiative</p>
-        <p>Aligned with NEPAD Agenda 2063 Framework • Updated September 2025</p>
-    </footer>
+<script>
+// ================= Navigation Functions =================
+function navigateToHome() {
+  console.log('Navigate to home');
+}
 
-    <script>
+function navigateToDashboard() {
+  console.log('Navigate to dashboard');
+}
 
+// ================= Utility: Convert image to Base64 =================
+function getImageAsBase64(imgElement) {
+  return new Promise((resolve) => {
+    if (!imgElement || !imgElement.complete || imgElement.naturalWidth === 0) {
+      console.warn('Image not loaded or invalid');
+      resolve(null);
+      return;
+    }
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = imgElement.naturalWidth || imgElement.width;
+      canvas.height = imgElement.naturalHeight || imgElement.height;
+      ctx.drawImage(imgElement, 0, 0);
+      const dataURL = canvas.toDataURL('image/png');
+      resolve(dataURL);
+    } catch (error) {
+      console.warn('Could not convert image to base64:', error);
+      resolve(null);
+    }
+  });
+}
 
-// Map bounds for Africa (approximate)
-        const MAP_BOUNDS = {
-            north: 37.5,    // Northern Africa (Morocco/Algeria/Tunisia)
-            south: -34.8,   // Southern Africa (South Africa)
-            west: -25.4,    // Western Africa (Cabo Verde)
-            east: 63.5      // Eastern Africa (Mauritius)
-        };
+// ================= PDF Download Functionality =================
+document.getElementById('downloadBtn').addEventListener('click', async function () {
+  const btn = this;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Generating...</span>';
+  btn.disabled = true;
 
-        // Convert latitude/longitude to pixel position on the map
-        function coordsToPixels(lat, lng) {
-            const mapElement = document.querySelector('.map-wrapper');
-            const mapRect = mapElement.getBoundingClientRect();
-            
-            // Normalize coordinates to 0-1 range within Africa bounds
-            const x = (lng - MAP_BOUNDS.west) / (MAP_BOUNDS.east - MAP_BOUNDS.west);
-            const y = (MAP_BOUNDS.north - lat) / (MAP_BOUNDS.north - MAP_BOUNDS.south);
-            
-            // Convert to pixel coordinates
-            const pixelX = (x * mapRect.width) / mapRect.width * 100; // as percentage
-            const pixelY = (y * mapRect.height) / mapRect.height * 100; // as percentage
-            
-            return {
-                left: Math.max(0, Math.min(100, pixelX)) + '%',
-                top: Math.max(0, Math.min(100, pixelY)) + '%'
-            };
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    // --- ✅ Load logo directly from file if DOM image not available ---
+    async function fetchLogoAsBase64() {
+      try {
+        const response = await fetch('/mnt/data/logo.png'); // Adjust if your logo path is different
+        const blob = await response.blob();
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+      } catch (err) {
+        console.warn('Could not fetch logo:', err);
+        return null;
+      }
+    }
+
+    let logoBase64 = null;
+    const logoImg = document.getElementById('logoImage');
+    if (logoImg) {
+      logoBase64 = await getImageAsBase64(logoImg);
+    }
+    if (!logoBase64) {
+      logoBase64 = await fetchLogoAsBase64();
+    }
+
+    // --- Add logo to first page ---
+    if (logoBase64) {
+      try {
+        doc.addImage(logoBase64, 'PNG', 10, 10, 30, 30);
+      } catch (error) {
+        console.warn('Could not add logo to PDF on page 1:', error);
+      }
+    }
+
+    // === Report Content ===
+    doc.setFontSize(20);
+    doc.text('African Quantum Community Report', logoBase64 ? 50 : 10, logoBase64 ? 25 : 20);
+
+    doc.setFontSize(12);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, logoBase64 ? 50 : 10, logoBase64 ? 35 : 30);
+
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('AQC Anchors: Unify • Clarify • Influence • Fund', logoBase64 ? 50 : 10, logoBase64 ? 42 : 37);
+    doc.setTextColor(0, 0, 0);
+
+    // Summary
+    doc.setFontSize(16);
+    doc.text('Summary Statistics', 10, logoBase64 ? 55 : 50);
+    doc.setFontSize(12);
+    doc.text('Total Members: 288', 10, logoBase64 ? 65 : 60);
+    doc.text('Organizations: 105', 10, logoBase64 ? 75 : 70);
+    doc.text('Countries: 50', 10, logoBase64 ? 85 : 80);
+    doc.text('Research Themes: 7', 10, logoBase64 ? 95 : 90);
+
+    // Top Countries
+    doc.setFontSize(16);
+    doc.text('Top Countries by Membership', 10, logoBase64 ? 115 : 110);
+    doc.setFontSize(12);
+    const countries = [
+      'United States: 53 (18.4%)',
+      'Nigeria: 27 (9.4%)',
+      'Egypt: 20 (6.9%)',
+      'Ghana: 13 (4.5%)',
+      'Kenya: 13 (4.5%)',
+      'Algeria: 11 (3.8%)'
+    ];
+    countries.forEach((country, index) => {
+      doc.text(country, 10, (logoBase64 ? 130 : 125) + (index * 10));
+    });
+
+    // Top Industries
+    doc.setFontSize(16);
+    doc.text('Top Industries', 10, logoBase64 ? 195 : 190);
+    doc.setFontSize(12);
+    const industries = [
+      'Education: 13 (4.5%)',
+      'IT: 6 (2.1%)',
+      'Academia: 4 (1.4%)',
+      'Research: 3 (1.0%)',
+      'Consulting: 3 (1.0%)',
+      'Quantum: 3 (1.0%)'
+    ];
+    industries.forEach((industry, index) => {
+      doc.text(industry, 10, (logoBase64 ? 210 : 205) + (index * 10));
+    });
+
+    // Second Page
+    doc.addPage();
+    if (logoBase64) {
+      try {
+        doc.addImage(logoBase64, 'PNG', 10, 10, 30, 30);
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text('AQC Anchors: Unify • Clarify • Influence • Fund', 50, 42);
+        doc.setTextColor(0, 0, 0);
+      } catch (error) {
+        console.warn('Could not add logo to PDF on page 2:', error);
+      }
+    }
+
+    // Research Themes
+    doc.setFontSize(16);
+    doc.text('Top Research Themes', 10, logoBase64 ? 50 : 30);
+    doc.setFontSize(12);
+    const themes = [
+      'Youth Research & Collaboration: 29 mentions, 27 contributors',
+      'Industry Applications: 19 mentions, 17 contributors',
+      'Education & Training: 15 mentions, 11 contributors',
+      'Community Outreach: 10 mentions, 7 contributors',
+      'Funding Support: 7 mentions, 7 contributors'
+    ];
+    themes.forEach((theme, index) => {
+      const lines = doc.splitTextToSize(theme, 190);
+      doc.text(lines, 10, (logoBase64 ? 65 : 45) + (index * 15));
+    });
+
+    // AQC Impact
+    doc.setFontSize(16);
+    doc.text('AQC Impact Through Our Anchors', 10, logoBase64 ? 150 : 130);
+    doc.setFontSize(14);
+    doc.text('UNIFY: Building quantum communities across 50 countries', 10, logoBase64 ? 165 : 145);
+    doc.text('CLARIFY: 7 research themes with 288 active contributors', 10, logoBase64 ? 175 : 155);
+    doc.text('INFLUENCE: Engaging 105 organizations in quantum advancement', 10, logoBase64 ? 185 : 165);
+    doc.text('FUND: Supporting research collaboration and capacity building', 10, logoBase64 ? 195 : 175);
+
+    // Member Engagement
+    doc.setFontSize(12);
+    doc.text('Top Member Contributions:', 10, logoBase64 ? 210 : 190);
+    const needs = [
+      '• Lead Working Groups: 4 interested members',
+      '• Mentorship/Guidance: Top community need (3 requests)',
+      '• Host Meetups: Community building (3 volunteers)',
+      '• Industry Partnerships: Collaboration (2 requests)'
+    ];
+    needs.forEach((need, index) => {
+      const lines = doc.splitTextToSize(need, 190);
+      doc.text(lines, 10, (logoBase64 ? 225 : 205) + (index * 10));
+    });
+
+    // Footer on both pages
+    doc.setFontSize(10);
+    doc.text('African Quantum Community Dashboard - Analytics Report', 10, 280);
+    doc.setPage(1);
+    doc.text('African Quantum Community Dashboard - Analytics Report', 10, 280);
+    doc.setPage(2);
+
+    // Save
+    doc.save(`AQC_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+
+    btn.innerHTML = '<i class="fas fa-check"></i> <span>Downloaded!</span>';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }, 2000);
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>Error</span>';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }, 2000);
+  }
+});
+
+// ================= Charts =================
+const countriesCtx = document.getElementById('countriesChart').getContext('2d');
+const countriesChart = new Chart(countriesCtx, {
+  type: 'bar',
+  data: {
+    labels: ['USA', 'Nigeria', 'Egypt', 'Ghana', 'Kenya', 'Algeria'],
+    datasets: [{
+      label: 'Members',
+      data: [53, 27, 20, 13, 13, 11],
+      backgroundColor: '#22c55e',
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: '#333' },
+        ticks: { color: 'rgba(255, 255, 255, 0.7)',
+          font: { size: (context) => window.innerWidth <= 480 ? 11 : window.innerWidth <= 768 ? 12 : 13 }
         }
-
-        // Position city markers based on coordinates
-        function positionCityMarkers() {
-            const markers = document.querySelectorAll('.quantum-city-marker');
-            
-            markers.forEach(marker => {
-                const lat = parseFloat(marker.getAttribute('data-lat'));
-                const lng = parseFloat(marker.getAttribute('data-lng'));
-                
-                if (!isNaN(lat) && !isNaN(lng)) {
-                    const position = coordsToPixels(lat, lng);
-                    marker.style.position = 'absolute';
-                    marker.style.left = position.left;
-                    marker.style.top = position.top;
-                }
-            });
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: 'rgba(255, 255, 255, 0.7)',
+          maxRotation: 0,
+          font: { size: (context) => window.innerWidth <= 480 ? 10 : window.innerWidth <= 768 ? 11 : 12 }
         }
+      }
+    },
+    animation: { duration: 0 }
+  }
+});
 
-        // Initialize dashboard animations and positioning
-        document.addEventListener('DOMContentLoaded', function() {
-            // Position city markers when page loads
-            setTimeout(positionCityMarkers, 100);
-            
-            // Reposition markers when window resizes
-            window.addEventListener('resize', positionCityMarkers);
-            
-            // Animate progress bars
-            setTimeout(() => {
-                const progressBars = document.querySelectorAll('.progress-fill');
-                progressBars.forEach((bar, index) => {
-                    setTimeout(() => {
-                        bar.style.opacity = '0';
-                        bar.style.width = '0%';
-                        bar.style.transition = 'all 1.5s ease-out';
-                        
-                        setTimeout(() => {
-                            bar.style.opacity = '1';
-                            bar.style.width = bar.style.width; // Restore original width
-                        }, 100);
-                    }, index * 150);
-                });
-            }, 500);
+const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+const distributionChart = new Chart(distributionCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Active', 'New', 'Inactive'],
+    datasets: [{
+      data: [265, 15, 8],
+      backgroundColor: ['#22c55e', '#fbbf24', '#6b7280'],
+      borderWidth: 0,
+      cutout: '70%'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: 'rgba(255, 255, 255, 0.7)',
+          usePointStyle: true,
+          padding: 10,
+          font: { size: (context) => window.innerWidth <= 480 ? 10 : window.innerWidth <= 768 ? 11 : 12 }
+        }
+      }
+    },
+    animation: { duration: 0 }
+  }
+});
 
-            // Animate metric values
-            const metrics = document.querySelectorAll('.metric-value');
-            metrics.forEach((metric, index) => {
-                setTimeout(() => {
-                    metric.style.transform = 'translateY(20px)';
-                    metric.style.opacity = '0';
-                    metric.style.transition = 'all 0.8s ease-out';
-                    
-                    setTimeout(() => {
-                        metric.style.transform = 'translateY(0)';
-                        metric.style.opacity = '1';
-                    }, 100);
-                }, index * 200);
-            });
-        });
+// ================= Mobile Optimization =================
+function optimizeForDevice() {
+  const isMobile = window.innerWidth <= 768;
+  const isSmallMobile = window.innerWidth <= 480;
+  const axisSize = isSmallMobile ? 11 : isMobile ? 12 : 13;
+  const legendSize = isSmallMobile ? 10 : isMobile ? 11 : 12;
 
+  countriesChart.options.scales.x.ticks.font.size = axisSize;
+  countriesChart.options.scales.y.ticks.font.size = axisSize;
+  distributionChart.options.plugins.legend.labels.font.size = legendSize;
+  countriesChart.update('none');
+  distributionChart.update('none');
 
+  const height = isSmallMobile ? '220px' : isMobile ? '240px' : '280px';
+  document.querySelectorAll('.chart-container, .donut-container').forEach(container => {
+    container.style.height = height;
+  });
+}
+optimizeForDevice();
 
-        // Initialize dashboard animations
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animate progress bars
-            setTimeout(() => {
-                const progressBars = document.querySelectorAll('.progress-fill');
-                progressBars.forEach((bar, index) => {
-                    setTimeout(() => {
-                        bar.style.opacity = '0';
-                        bar.style.width = '0%';
-                        bar.style.transition = 'all 1.5s ease-out';
-                        
-                        setTimeout(() => {
-                            bar.style.opacity = '1';
-                            bar.style.width = bar.style.width; // Restore original width
-                        }, 100);
-                    }, index * 150);
-                });
-            }, 500);
+let resizeTimeout;
+window.addEventListener('resize', function () {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(optimizeForDevice, 250);
+});
 
-            // Animate metric values
-            const metrics = document.querySelectorAll('.metric-value');
-            metrics.forEach((metric, index) => {
-                setTimeout(() => {
-                    metric.style.transform = 'translateY(20px)';
-                    metric.style.opacity = '0';
-                    metric.style.transition = 'all 0.8s ease-out';
-                    
-                    setTimeout(() => {
-                        metric.style.transform = 'translateY(0)';
-                        metric.style.opacity = '1';
-                    }, 100);
-                }, index * 200);
-            });
-        });
+// ================= Interactive Effects =================
+document.querySelectorAll('.stat-card, .chart-card, .table-card').forEach(card => {
+  card.addEventListener('mouseenter', function () {
+    if (window.innerWidth > 768) this.style.transform = 'translateY(-1px)';
+  });
+  card.addEventListener('mouseleave', function () {
+    this.style.transform = 'translateY(0)';
+  });
+  card.addEventListener('touchstart', function () {
+    this.style.transform = 'scale(0.98)';
+  });
+  card.addEventListener('touchend', function () {
+    this.style.transform = 'scale(1)';
+  });
+});
 
-        // Interactive city markers
-        document.querySelectorAll('.quantum-city-marker').forEach(marker => {
-            marker.addEventListener('click', function() {
-                const cityName = this.getAttribute('data-city');
-                
-                // Find corresponding city in the list and highlight it
-                const cityItems = document.querySelectorAll('.city-item');
-                cityItems.forEach(item => {
-                    item.style.background = 'rgba(255, 255, 255, 0.05)';
-                });
-                
-                const matchingCity = Array.from(cityItems).find(item => 
-                    item.querySelector('.city-name').textContent === cityName
-                );
-                
-                if (matchingCity) {
-                    matchingCity.style.background = 'rgba(0, 204, 136, 0.2)';
-                    matchingCity.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    setTimeout(() => {
-                        matchingCity.style.background = 'rgba(255, 255, 255, 0.05)';
-                    }, 3000);
-                }
-            });
-        });
+document.querySelectorAll('.theme-item, .needs-item').forEach(item => {
+  item.addEventListener('click', function () {
+    this.style.background = '#1a1a1a';
+    setTimeout(() => { this.style.background = 'transparent'; }, 150);
+  });
+});
 
-        // Real-time data updates simulation
-        setInterval(() => {
-            const changes = document.querySelectorAll('.metric-change');
-            changes.forEach(change => {
-                if (Math.random() > 0.8) {
-                    change.style.color = '#f5f5f5';
-                    setTimeout(() => {
-                        change.style.color = '#00cc88';
-                    }, 1500);
-                }
-            });
-        }, 10000);
+// Keyboard Shortcuts
+document.addEventListener('keydown', function (e) {
+  if (e.ctrlKey && e.key === 's') {
+    e.preventDefault();
+    document.getElementById('downloadBtn').click();
+  }
+});
 
-        // Smooth scrolling for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-    </script>
+// Passive Touch Optimization
+document.addEventListener('touchstart', function () {}, { passive: true });
+document.addEventListener('touchmove', function () {}, { passive: true });
+
+// Smooth Scrolling
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// Chart Loading Animation
+document.addEventListener('DOMContentLoaded', function () {
+  setTimeout(() => {
+    document.querySelectorAll('.chart-card').forEach(card => {
+      card.style.opacity = '1';
+    });
+  }, 100);
+});
+
+// Intersection Observer Animations
+if ('IntersectionObserver' in window) {
+  const chartObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-in');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '50px' });
+
+  document.querySelectorAll('.chart-card, .stat-card, .table-card').forEach(card => {
+    chartObserver.observe(card);
+  });
+}
+
+// Logo Error Handling
+document.getElementById('logoImage')?.addEventListener('error', function () {
+  console.warn('Logo image could not be loaded from logo.png');
+  this.style.display = 'none';
+});
+</script>
+
 </body>
 </html>
