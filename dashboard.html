@@ -1009,7 +1009,7 @@ document.getElementById('downloadBtn').addEventListener('click', async function 
     // --- ✅ Load logo directly from file if DOM image not available ---
     async function fetchLogoAsBase64() {
       try {
-        const response = await fetch('/mnt/data/logo.png'); // Adjust if your logo path is different
+        const response = await fetch('/mnt/data/aqc_logo.png'); // Adjust if your logo path is different
         const blob = await response.blob();
         return new Promise((resolve) => {
           const reader = new FileReader();
@@ -1337,7 +1337,7 @@ if ('IntersectionObserver' in window) {
 
 // Logo Error Handling
 document.getElementById('logoImage')?.addEventListener('error', function () {
-  console.warn('Logo image could not be loaded from logo.png');
+  console.warn('Logo image could not be loaded from aqc_logo.png');
   this.style.display = 'none';
 });
 </script>
