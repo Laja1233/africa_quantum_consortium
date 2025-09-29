@@ -84,6 +84,25 @@
             gap: 15px;
             flex-wrap: wrap;
         }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .logo-container {
+            flex-shrink: 0;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
         
         .welcome {
             flex: 1;
@@ -256,7 +275,6 @@
             min-width: 80px;
         }
 
-        /* Fixed chart container heights with proper responsive behavior */
         .chart-container {
             height: 280px;
             position: relative;
@@ -448,7 +466,6 @@
             background: #1a1a1a;
         }
 
-        /* Responsive breakpoints */
         @media (min-width: 768px) {
             .charts-grid {
                 grid-template-columns: 2fr 1fr;
@@ -480,6 +497,17 @@
                 gap: 12px;
                 padding: 15px;
                 text-align: center;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .logo {
+                width: 50px;
+                height: 50px;
             }
             
             .header-actions {
@@ -561,6 +589,11 @@
             .header {
                 padding: 15px;
             }
+
+            .logo {
+                width: 45px;
+                height: 45px;
+            }
             
             .welcome h1 {
                 font-size: 22px;
@@ -626,7 +659,6 @@
             }
         }
 
-        /* Additional overflow fixes */
         .charts-section,
         .bottom-section,
         .content-grid,
@@ -634,7 +666,6 @@
             overflow-x: hidden;
         }
 
-        /* Ensure all text breaks properly */
         h1, h2, h3, h4, h5, h6, p, span, div {
             word-wrap: break-word;
             overflow-wrap: break-word;
@@ -644,7 +675,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Breadcrumb Navigation -->
         <nav class="breadcrumb">
             <a href="index.html">
                 <i class="fas fa-home"></i> Home
@@ -654,9 +684,14 @@
         </nav>
 
         <div class="header">
-            <div class="welcome">
-                <h1>African Quantum Community Dashboard</h1>
-                <p>Analytics of our quantum ecosystem across 50 countries with 288 members</p>
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="logo.png" alt="African Quantum Community Logo" class="logo" id="logoImage">
+                </div>
+                <div class="welcome">
+                    <h1>African Quantum Community Dashboard</h1>
+                    <p>Analytics of our quantum ecosystem across 50 countries with 288 members</p>
+                </div>
             </div>
             <div class="header-actions">
                 <button class="btn btn-secondary" id="downloadBtn">
@@ -705,10 +740,6 @@
                             <i class="fas fa-chart-bar" style="color: #22c55e;"></i>
                             Top Countries by Membership
                         </span>
-                        <select class="date-filter">
-                            <option>All Time</option>
-                            <option>Last 12 Months</option>
-                        </select>
                     </div>
                     <div class="chart-container">
                         <canvas id="countriesChart"></canvas>
@@ -720,9 +751,6 @@
                             <i class="fas fa-chart-pie" style="color: #22c55e;"></i>
                             Member Status
                         </span>
-                        <select class="date-filter">
-                            <option>Current</option>
-                        </select>
                     </div>
                     <div class="donut-container">
                         <canvas id="distributionChart"></canvas>
@@ -743,9 +771,6 @@
                             <i class="fas fa-industry" style="color: #22c55e;"></i>
                             Top Industries
                         </span>
-                        <button class="more-btn">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
                     </div>
                     <table class="table">
                         <thead>
@@ -796,9 +821,6 @@
                             <i class="fas fa-flag" style="color: #22c55e;"></i>
                             Geographic Distribution
                         </span>
-                        <button class="more-btn">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
                     </div>
                     <table class="table">
                         <thead>
@@ -851,9 +873,6 @@
                             <i class="fas fa-lightbulb" style="color: #22c55e;"></i>
                             Research Themes
                         </span>
-                        <button class="more-btn">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
                     </div>
                     <div>
                         <div class="theme-item">
@@ -900,9 +919,6 @@
                             <i class="fas fa-users-cog" style="color: #22c55e;"></i>
                             Member Needs & Contributions
                         </span>
-                        <button class="more-btn">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
                     </div>
                     <div>
                         <div class="needs-item">
@@ -946,332 +962,385 @@
         </div>
     </div>
 
-    <script>
-        // Navigation functions
-        function navigateToHome() {
-            console.log('Navigate to home');
+<script>
+// ================= Navigation Functions =================
+function navigateToHome() {
+  console.log('Navigate to home');
+}
+
+function navigateToDashboard() {
+  console.log('Navigate to dashboard');
+}
+
+// ================= Utility: Convert image to Base64 =================
+function getImageAsBase64(imgElement) {
+  return new Promise((resolve) => {
+    if (!imgElement || !imgElement.complete || imgElement.naturalWidth === 0) {
+      console.warn('Image not loaded or invalid');
+      resolve(null);
+      return;
+    }
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = imgElement.naturalWidth || imgElement.width;
+      canvas.height = imgElement.naturalHeight || imgElement.height;
+      ctx.drawImage(imgElement, 0, 0);
+      const dataURL = canvas.toDataURL('image/png');
+      resolve(dataURL);
+    } catch (error) {
+      console.warn('Could not convert image to base64:', error);
+      resolve(null);
+    }
+  });
+}
+
+// ================= PDF Download Functionality =================
+document.getElementById('downloadBtn').addEventListener('click', async function () {
+  const btn = this;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Generating...</span>';
+  btn.disabled = true;
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    // --- ✅ Load logo directly from file if DOM image not available ---
+    async function fetchLogoAsBase64() {
+      try {
+        const response = await fetch('/mnt/data/logo.png'); // Adjust if your logo path is different
+        const blob = await response.blob();
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+      } catch (err) {
+        console.warn('Could not fetch logo:', err);
+        return null;
+      }
+    }
+
+    let logoBase64 = null;
+    const logoImg = document.getElementById('logoImage');
+    if (logoImg) {
+      logoBase64 = await getImageAsBase64(logoImg);
+    }
+    if (!logoBase64) {
+      logoBase64 = await fetchLogoAsBase64();
+    }
+
+    // --- Add logo to first page ---
+    if (logoBase64) {
+      try {
+        doc.addImage(logoBase64, 'PNG', 10, 10, 30, 30);
+      } catch (error) {
+        console.warn('Could not add logo to PDF on page 1:', error);
+      }
+    }
+
+    // === Report Content ===
+    doc.setFontSize(20);
+    doc.text('African Quantum Community Report', logoBase64 ? 50 : 10, logoBase64 ? 25 : 20);
+
+    doc.setFontSize(12);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, logoBase64 ? 50 : 10, logoBase64 ? 35 : 30);
+
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('AQC Anchors: Unify • Clarify • Influence • Fund', logoBase64 ? 50 : 10, logoBase64 ? 42 : 37);
+    doc.setTextColor(0, 0, 0);
+
+    // Summary
+    doc.setFontSize(16);
+    doc.text('Summary Statistics', 10, logoBase64 ? 55 : 50);
+    doc.setFontSize(12);
+    doc.text('Total Members: 288', 10, logoBase64 ? 65 : 60);
+    doc.text('Organizations: 105', 10, logoBase64 ? 75 : 70);
+    doc.text('Countries: 50', 10, logoBase64 ? 85 : 80);
+    doc.text('Research Themes: 7', 10, logoBase64 ? 95 : 90);
+
+    // Top Countries
+    doc.setFontSize(16);
+    doc.text('Top Countries by Membership', 10, logoBase64 ? 115 : 110);
+    doc.setFontSize(12);
+    const countries = [
+      'United States: 53 (18.4%)',
+      'Nigeria: 27 (9.4%)',
+      'Egypt: 20 (6.9%)',
+      'Ghana: 13 (4.5%)',
+      'Kenya: 13 (4.5%)',
+      'Algeria: 11 (3.8%)'
+    ];
+    countries.forEach((country, index) => {
+      doc.text(country, 10, (logoBase64 ? 130 : 125) + (index * 10));
+    });
+
+    // Top Industries
+    doc.setFontSize(16);
+    doc.text('Top Industries', 10, logoBase64 ? 195 : 190);
+    doc.setFontSize(12);
+    const industries = [
+      'Education: 13 (4.5%)',
+      'IT: 6 (2.1%)',
+      'Academia: 4 (1.4%)',
+      'Research: 3 (1.0%)',
+      'Consulting: 3 (1.0%)',
+      'Quantum: 3 (1.0%)'
+    ];
+    industries.forEach((industry, index) => {
+      doc.text(industry, 10, (logoBase64 ? 210 : 205) + (index * 10));
+    });
+
+    // Second Page
+    doc.addPage();
+    if (logoBase64) {
+      try {
+        doc.addImage(logoBase64, 'PNG', 10, 10, 30, 30);
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text('AQC Anchors: Unify • Clarify • Influence • Fund', 50, 42);
+        doc.setTextColor(0, 0, 0);
+      } catch (error) {
+        console.warn('Could not add logo to PDF on page 2:', error);
+      }
+    }
+
+    // Research Themes
+    doc.setFontSize(16);
+    doc.text('Top Research Themes', 10, logoBase64 ? 50 : 30);
+    doc.setFontSize(12);
+    const themes = [
+      'Youth Research & Collaboration: 29 mentions, 27 contributors',
+      'Industry Applications: 19 mentions, 17 contributors',
+      'Education & Training: 15 mentions, 11 contributors',
+      'Community Outreach: 10 mentions, 7 contributors',
+      'Funding Support: 7 mentions, 7 contributors'
+    ];
+    themes.forEach((theme, index) => {
+      const lines = doc.splitTextToSize(theme, 190);
+      doc.text(lines, 10, (logoBase64 ? 65 : 45) + (index * 15));
+    });
+
+    // AQC Impact
+    doc.setFontSize(16);
+    doc.text('AQC Impact Through Our Anchors', 10, logoBase64 ? 150 : 130);
+    doc.setFontSize(14);
+    doc.text('UNIFY: Building quantum communities across 50 countries', 10, logoBase64 ? 165 : 145);
+    doc.text('CLARIFY: 7 research themes with 288 active contributors', 10, logoBase64 ? 175 : 155);
+    doc.text('INFLUENCE: Engaging 105 organizations in quantum advancement', 10, logoBase64 ? 185 : 165);
+    doc.text('FUND: Supporting research collaboration and capacity building', 10, logoBase64 ? 195 : 175);
+
+    // Member Engagement
+    doc.setFontSize(12);
+    doc.text('Top Member Contributions:', 10, logoBase64 ? 210 : 190);
+    const needs = [
+      '• Lead Working Groups: 4 interested members',
+      '• Mentorship/Guidance: Top community need (3 requests)',
+      '• Host Meetups: Community building (3 volunteers)',
+      '• Industry Partnerships: Collaboration (2 requests)'
+    ];
+    needs.forEach((need, index) => {
+      const lines = doc.splitTextToSize(need, 190);
+      doc.text(lines, 10, (logoBase64 ? 225 : 205) + (index * 10));
+    });
+
+    // Footer on both pages
+    doc.setFontSize(10);
+    doc.text('African Quantum Community Dashboard - Analytics Report', 10, 280);
+    doc.setPage(1);
+    doc.text('African Quantum Community Dashboard - Analytics Report', 10, 280);
+    doc.setPage(2);
+
+    // Save
+    doc.save(`AQC_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+
+    btn.innerHTML = '<i class="fas fa-check"></i> <span>Downloaded!</span>';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }, 2000);
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>Error</span>';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }, 2000);
+  }
+});
+
+// ================= Charts =================
+const countriesCtx = document.getElementById('countriesChart').getContext('2d');
+const countriesChart = new Chart(countriesCtx, {
+  type: 'bar',
+  data: {
+    labels: ['USA', 'Nigeria', 'Egypt', 'Ghana', 'Kenya', 'Algeria'],
+    datasets: [{
+      label: 'Members',
+      data: [53, 27, 20, 13, 13, 11],
+      backgroundColor: '#22c55e',
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: '#333' },
+        ticks: { color: 'rgba(255, 255, 255, 0.7)',
+          font: { size: (context) => window.innerWidth <= 480 ? 11 : window.innerWidth <= 768 ? 12 : 13 }
         }
-
-        function navigateToDashboard() {
-            console.log('Navigate to dashboard');
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: 'rgba(255, 255, 255, 0.7)',
+          maxRotation: 0,
+          font: { size: (context) => window.innerWidth <= 480 ? 10 : window.innerWidth <= 768 ? 11 : 12 }
         }
+      }
+    },
+    animation: { duration: 0 }
+  }
+});
 
-        // PDF download functionality
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            const btn = this;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Generating...</span>';
-            btn.disabled = true;
-
-            setTimeout(() => {
-                try {
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF();
-                    
-                    doc.setFontSize(20);
-                    doc.text('African Quantum Community Report', 20, 30);
-                    
-                    // Add date
-                    doc.setFontSize(12);
-                    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 45);
-                    
-                    // Add summary
-                    doc.setFontSize(16);
-                    doc.text('Summary Statistics', 20, 65);
-                    
-                    doc.setFontSize(12);
-                    doc.text('Total Members: 288', 20, 80);
-                    doc.text('Organizations: 105', 20, 90);
-                    doc.text('Countries: 50', 20, 100);
-                    doc.text('Research Themes: 7', 20, 110);
-                    
-                    // Add top countries
-                    doc.setFontSize(16);
-                    doc.text('Top Countries by Membership', 20, 130);
-                    
-                    doc.setFontSize(12);
-                    const countries = [
-                        'United States: 53 (18.4%)',
-                        'Nigeria: 27 (9.4%)',
-                        'Egypt: 20 (6.9%)',
-                        'Ghana: 13 (4.5%)',
-                        'Kenya: 13 (4.5%)',
-                        'Algeria: 11 (3.8%)'
-                    ];
-                    
-                    countries.forEach((country, index) => {
-                        doc.text(country, 20, 145 + (index * 10));
-                    });
-                    
-                    // Add research themes
-                    doc.setFontSize(16);
-                    doc.text('Top Research Themes', 20, 220);
-                    
-                    doc.setFontSize(12);
-                    const themes = [
-                        'Youth Research & Collaboration: 29 mentions',
-                        'Industry Applications: 19 mentions',
-                        'Education & Training: 15 mentions',
-                        'Community Outreach: 10 mentions',
-                        'Funding Support: 7 mentions'
-                    ];
-                    
-                    themes.forEach((theme, index) => {
-                        doc.text(theme, 20, 235 + (index * 10));
-                    });
-                    
-                    // Save the PDF
-                    doc.save(`AQC_Report_${new Date().toISOString().split('T')[0]}.pdf`);
-                    
-                    btn.innerHTML = '<i class="fas fa-check"></i> <span>Downloaded!</span>';
-                    
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                    }, 2000);
-                    
-                } catch (error) {
-                    console.error('PDF generation error:', error);
-                    btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>Error</span>';
-                    
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                    }, 2000);
-                }
-            }, 500);
-        });
-
-        // Countries Bar Chart - Enhanced for mobile
-        const countriesCtx = document.getElementById('countriesChart').getContext('2d');
-        const countriesChart = new Chart(countriesCtx, {
-            type: 'bar',
-            data: {
-                labels: ['USA', 'Nigeria', 'Egypt', 'Ghana', 'Kenya', 'Algeria'],
-                datasets: [{
-                    label: 'Members',
-                    data: [53, 27, 20, 13, 13, 11],
-                    backgroundColor: '#22c55e',
-                    borderRadius: 4,
-                    borderSkipped: false,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: '#333'
-                        },
-                        ticks: {
-                            color: 'rgba(255, 255, 255, 0.7)',
-                            font: {
-                                size: function(context) {
-                                    return window.innerWidth <= 480 ? 11 : window.innerWidth <= 768 ? 12 : 13;
-                                }
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: 'rgba(255, 255, 255, 0.7)',
-                            maxRotation: 0,
-                            font: {
-                                size: function(context) {
-                                    return window.innerWidth <= 480 ? 10 : window.innerWidth <= 768 ? 11 : 12;
-                                }
-                            }
-                        }
-                    }
-                },
-                animation: {
-                    duration: 0
-                }
-            }
-        });
-
-        // Distribution Chart - Enhanced for mobile
-        const distributionCtx = document.getElementById('distributionChart').getContext('2d');
-        const distributionChart = new Chart(distributionCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Active', 'New', 'Inactive'],
-                datasets: [{
-                    data: [265, 15, 8],
-                    backgroundColor: [
-                        '#22c55e',
-                        '#fbbf24',
-                        '#6b7280'
-                    ],
-                    borderWidth: 0,
-                    cutout: '70%'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: 'rgba(255, 255, 255, 0.7)',
-                            usePointStyle: true,
-                            padding: 10,
-                            font: {
-                                size: function(context) {
-                                    return window.innerWidth <= 480 ? 10 : window.innerWidth <= 768 ? 11 : 12;
-                                }
-                            }
-                        }
-                    }
-                },
-                animation: {
-                    duration: 0
-                }
-            }
-        });
-
-        // Enhanced mobile optimization
-        function optimizeForDevice() {
-            const isMobile = window.innerWidth <= 768;
-            const isSmallMobile = window.innerWidth <= 480;
-            
-            // Update chart font sizes based on screen size
-            const axisSize = isSmallMobile ? 11 : isMobile ? 12 : 13;
-            const legendSize = isSmallMobile ? 10 : isMobile ? 11 : 12;
-            
-            // Update countries chart
-            countriesChart.options.scales.x.ticks.font.size = axisSize;
-            countriesChart.options.scales.y.ticks.font.size = axisSize;
-            
-            // Update distribution chart
-            distributionChart.options.plugins.legend.labels.font.size = legendSize;
-            
-            // Update charts without animation
-            countriesChart.update('none');
-            distributionChart.update('none');
-            
-            // Adjust chart containers for different screen sizes
-            if (isSmallMobile) {
-                document.querySelectorAll('.chart-container, .donut-container').forEach(container => {
-                    container.style.height = '220px';
-                });
-            } else if (isMobile) {
-                document.querySelectorAll('.chart-container, .donut-container').forEach(container => {
-                    container.style.height = '240px';
-                });
-            } else {
-                document.querySelectorAll('.chart-container, .donut-container').forEach(container => {
-                    container.style.height = '280px';
-                });
-            }
+const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+const distributionChart = new Chart(distributionCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Active', 'New', 'Inactive'],
+    datasets: [{
+      data: [265, 15, 8],
+      backgroundColor: ['#22c55e', '#fbbf24', '#6b7280'],
+      borderWidth: 0,
+      cutout: '70%'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: 'rgba(255, 255, 255, 0.7)',
+          usePointStyle: true,
+          padding: 10,
+          font: { size: (context) => window.innerWidth <= 480 ? 10 : window.innerWidth <= 768 ? 11 : 12 }
         }
+      }
+    },
+    animation: { duration: 0 }
+  }
+});
 
-        // Initial optimization
-        optimizeForDevice();
+// ================= Mobile Optimization =================
+function optimizeForDevice() {
+  const isMobile = window.innerWidth <= 768;
+  const isSmallMobile = window.innerWidth <= 480;
+  const axisSize = isSmallMobile ? 11 : isMobile ? 12 : 13;
+  const legendSize = isSmallMobile ? 10 : isMobile ? 11 : 12;
 
-        // Debounced resize handler to prevent excessive updates
-        let resizeTimeout;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(optimizeForDevice, 250);
-        });
+  countriesChart.options.scales.x.ticks.font.size = axisSize;
+  countriesChart.options.scales.y.ticks.font.size = axisSize;
+  distributionChart.options.plugins.legend.labels.font.size = legendSize;
+  countriesChart.update('none');
+  distributionChart.update('none');
 
-        // Enhanced hover effects with touch support
-        document.querySelectorAll('.stat-card, .chart-card, .table-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                if (window.innerWidth > 768) {
-                    this.style.transform = 'translateY(-1px)';
-                }
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-            
-            // Touch feedback for mobile
-            card.addEventListener('touchstart', function() {
-                this.style.transform = 'scale(0.98)';
-            });
-            
-            card.addEventListener('touchend', function() {
-                this.style.transform = 'scale(1)';
-            });
-        });
+  const height = isSmallMobile ? '220px' : isMobile ? '240px' : '280px';
+  document.querySelectorAll('.chart-container, .donut-container').forEach(container => {
+    container.style.height = height;
+  });
+}
+optimizeForDevice();
 
-        // Enhanced theme item interactions with better mobile support
-        document.querySelectorAll('.theme-item, .needs-item').forEach(item => {
-            item.addEventListener('click', function() {
-                this.style.background = '#1a1a1a';
-                setTimeout(() => {
-                    this.style.background = 'transparent';
-                }, 150);
-            });
-        });
+let resizeTimeout;
+window.addEventListener('resize', function () {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(optimizeForDevice, 250);
+});
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                document.getElementById('downloadBtn').click();
-            }
-        });
+// ================= Interactive Effects =================
+document.querySelectorAll('.stat-card, .chart-card, .table-card').forEach(card => {
+  card.addEventListener('mouseenter', function () {
+    if (window.innerWidth > 768) this.style.transform = 'translateY(-1px)';
+  });
+  card.addEventListener('mouseleave', function () {
+    this.style.transform = 'translateY(0)';
+  });
+  card.addEventListener('touchstart', function () {
+    this.style.transform = 'scale(0.98)';
+  });
+  card.addEventListener('touchend', function () {
+    this.style.transform = 'scale(1)';
+  });
+});
 
-        // Prevent horizontal scroll on mobile
-        document.addEventListener('touchstart', function() {}, {passive: true});
-        document.addEventListener('touchmove', function() {}, {passive: true});
+document.querySelectorAll('.theme-item, .needs-item').forEach(item => {
+  item.addEventListener('click', function () {
+    this.style.background = '#1a1a1a';
+    setTimeout(() => { this.style.background = 'transparent'; }, 150);
+  });
+});
 
-        // Enhanced smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
+// Keyboard Shortcuts
+document.addEventListener('keydown', function (e) {
+  if (e.ctrlKey && e.key === 's') {
+    e.preventDefault();
+    document.getElementById('downloadBtn').click();
+  }
+});
 
-        // Add loading states for better UX
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add a subtle loading animation for charts
-            setTimeout(() => {
-                document.querySelectorAll('.chart-card').forEach(card => {
-                    card.style.opacity = '1';
-                });
-            }, 100);
-        });
+// Passive Touch Optimization
+document.addEventListener('touchstart', function () {}, { passive: true });
+document.addEventListener('touchmove', function () {}, { passive: true });
 
-        // Performance optimization: Intersection Observer for charts
-        if ('IntersectionObserver' in window) {
-            const chartObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-in');
-                    }
-                });
-            }, {
-                threshold: 0.1,
-                rootMargin: '50px'
-            });
+// Smooth Scrolling
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
 
-            document.querySelectorAll('.chart-card, .stat-card, .table-card').forEach(card => {
-                chartObserver.observe(card);
-            });
-        }
-    </script>
+// Chart Loading Animation
+document.addEventListener('DOMContentLoaded', function () {
+  setTimeout(() => {
+    document.querySelectorAll('.chart-card').forEach(card => {
+      card.style.opacity = '1';
+    });
+  }, 100);
+});
+
+// Intersection Observer Animations
+if ('IntersectionObserver' in window) {
+  const chartObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-in');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '50px' });
+
+  document.querySelectorAll('.chart-card, .stat-card, .table-card').forEach(card => {
+    chartObserver.observe(card);
+  });
+}
+
+// Logo Error Handling
+document.getElementById('logoImage')?.addEventListener('error', function () {
+  console.warn('Logo image could not be loaded from logo.png');
+  this.style.display = 'none';
+});
+</script>
+
 </body>
 </html>
